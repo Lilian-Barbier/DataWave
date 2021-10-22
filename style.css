@@ -1,0 +1,9 @@
+#target {
+    white-space:pre;
+    display:inline-block;
+  }
+  #target span {
+    position:relative;
+    display:inline-block;
+    transform-origin:left;
+  }
