@@ -1,6 +1,6 @@
 var curvePoints = '70.2,177.2,130.02,60.0,300.5,276.2,300.7,176.2';
 // var curveText = "Las des fleurs, épuisé de ses longues amours,Un papillon dans sa vieillesse(Il avait du printemps goûté les plus beaux jours)Voyait d\'un oeil chagrin la tendre hardiesseDes amants nouveau-nés, dont le rapide essorEffleurait les boutons qu\'humectait la rosée.Soulevant un matin le débile ressortDe son aile à demi-brisée :\" Tout a changé, dit-il, tout se fane. AutrefoisL\'univers n\'avait point cet aspect qui m\'afflige.Oui, la nature se néglige ;Aussi pour la chanter l\'oiseau n\'a plus de voix.Les papillons passés avaient bien plus de charmes !Toutes les fleurs tombaient sous nos brûlantes armes !Touchés par le soleil, nos légers vêtementsSemblaient brodés de diamants !Je ne vois plus rien sur la terreQui ressemble à mon beau matin !J\'ai froid. Tout, jusqu\'aux fleurs, prend une teinte austère,Et je n\'ai plus de goût aux restes du festin !Ce gazon si charmant, ce duvet des prairies,Où mon vol fatigué descendait vers le soir,Où Chloé, qui n\'est plus, vint chanter et s\'asseoir,N\'offre plus qu\'un vert pâle et des couleurs flétries !L\'air me soutient à peine à travers les brouillardsQui voilent le soleil de mes longues journées ;Mes heures, sans amour, se changent en années :Hélas ! Que je plains les vieillards !\" Je voudrais, cependant, que mon expérienceServît à tous ces fils de l\'air.Sous des bosquets flétris j\'ai puisé ma science,J\'ai défini la vie, enfants : c\'est un éclair !Frêles triomphateurs, vos ailes intrépidesS\'arrêteront un jour avec étonnement :Plus de larcins alors, plus de baisers avides ;Les roses subiront un affreux changement.\" Je croyais comme vous qu\'une flamme immortelleCoulait dans les parfums créés pour me nourrir,Qu\'une fleur était toujours belle,Et que rien ne devait mourir.Mais le temps m\'a parlé ; sa sévère éloquenceA détendu mon vol et glacé mes penchants :Le coteau me fatigue et je me traîne aux champs ;Enfin, je vois la mort où votre inconséquencePoursuit la volupté. Je n\'ai plus de désir,Car on dit que l\'amour est un bonheur coupable :Hélas ! D\'y succomber je ne suis plus capable,Et je suis tout honteux d\'avoir eu du plaisir. \"Près du sybarite invalide,Un papillon naissait dans toute sa beauté :Cette plainte l\'étonne ; il rêve, il est tentéDe rentrer dans sa chrysalide.\" Quoi ! Dit-il, ce ciel pur, ce soleil généreux,Qui me transforme et qui me fait éclore,Mon berceau transparent qu\'il chauffe et qu\'il colore,Tous ces biens me rendront coupable et malheureux !Mais un instinct si doux m\'attire dans la vie !Un souffle si puissant m\'appelle autour des fleurs !Là-bas, ces coteaux verts, ces brillantes couleursFont naître tant d\'espoir, tant d\'amour, tant d\'envie !Oh ! Tais-toi, pauvre sage, ou pauvre ingrat, tais-toi !Tu nous défends les fleurs encor penché sur elles.Dors, si tu n\'aimes plus ; mais les cieux sont à moi :J\'éclos pour m\'envoler, et je risque mes ailes !";
-var curveText = '01000011 01100101 01110100 00100000 01101111 01110101 01110100 01101001 01101100 00100000 01110110 01101111 01110101 01110011 00100000 01110000 01100101 01110010 01101101 01100101 01110100 00100000 01100100 01100101 00100000 01100011 01101111 01101110 01110110 01100101 01110010 01110100 01101001 01110010 00100000 01110101 01101110 00100000 01110100 01100101 01111000 01110100 01100101 00100000 01100101 01101110 00100000 01100011 01101111 01100100 01100101 00100000 01100010 01101001 01101110 01100001 01101001 01110010 01100101 00100000 01100101 01110100 00100000 01110110 ';
+var curveText = '01000011 01100101 01110100 00100000 01101111 01110101 01110100 01101001 01101100 00100000 01110110  01100100 01100101 00100000 01100010 01101001 01101110 01100001 01101001 01110010 01100101 00100000 01100101 01110100 00100000 01110110 ';
 var points = curvePoints.split(',');
 
 var canvas = document.getElementById("canvas");
@@ -60,11 +60,7 @@ function FillRibbon(text) {
     // console.log(cDist);
     
     for (i = 0; i < w; i++) {
-        ctx.save();
-        ctx.translate(textCurve[p].bezier.point.x, textCurve[p].bezier.point.y);
-        ctx.rotate(textCurve[p].curve.rad);
-        ctx.fillText(ribbon[i], 0, 0);
-        ctx.restore();
+
         
         x1 = ctx.measureText(ribbon[i]).width + letterPpushing;
         x2 = 0;
@@ -130,6 +126,9 @@ function updateSlider()
     var sliceEnd = 5;
     cpt = 0;
 
+    var secondPointMovement = 0;
+    var triggerAlternateMovement = true;
+
     setInterval(()=>{
 
         ctx.fillStyle = 'black';
@@ -138,7 +137,7 @@ function updateSlider()
         
         ctx.fillStyle = 'white';
 
-        for(var i = 0; i<canvas.width; i=i+25){
+        for(var i = 0; i<canvas.width; i=i+50){
             points = [];
     
             x = i;
@@ -160,19 +159,37 @@ function updateSlider()
     
             //Calcul d'un point à 1/3 
             
-            points.push(x*1/3+Math.random());
-            points.push(y*1/3+Math.random());
+            if(secondPointMovement < 150 && triggerAlternateMovement ){
+                secondPointMovement += Math.floor(Math.random() * (3 - 1)) + 1;
+            }
+            else 
+            {
+                triggerAlternateMovement = false;
+            }
+
+            if(secondPointMovement > -150 && !triggerAlternateMovement ){
+                secondPointMovement -= Math.floor(Math.random() * (3 - 1)) + 1;
+            }
+            else 
+            {
+                triggerAlternateMovement = true;
+            }
+
+
+            points.push(x*1/3 + secondPointMovement);
+            points.push(y*1/3 + secondPointMovement);
     
     
             //calcul d'un point à 2/3
-            points.push(x*2/3+Math.random());
-            points.push(y*2/3+Math.random());
+            points.push(x*2/3 - secondPointMovement);
+            points.push(y*2/3 - secondPointMovement);
             
             points.push(i);
             points.push(0);
     
             // console.log(sliceStart + " - " + sliceEnd);
-    
+            // curveText = curveText.slice(1, curveText.length) + curveText.slice(0,1)
+
             FillRibbon(curveText);
     
             // .slice(sliceStart, sliceEnd)
@@ -186,7 +203,7 @@ function updateSlider()
         
         cpt++;
 
-    }, 100);
+    }, 300);
 
    
 
